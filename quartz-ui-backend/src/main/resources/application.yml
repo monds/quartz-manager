@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:3306/quartz
+    username: quartz
+    password: fyaWMtEhcb
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+  quartz:
+    scheduler-name: quartz-ui
+    properties:
+      org.quartz.scheduler:
+        instanceId: AUTO
+      org.quartz.jobStore:
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+        useProperties: true
+        misfireThreshold: 60000
+        tablePrefix: QRTZ_
+        isClustered: true
+        clusterCheckinInterval: 20000
+
+
+#jasypt:
+#  encryptor:
+#    bean: encryptorBean
+#    property:
+#      prefix: ENC(
+#      suffix: )
+
+scheduler:
+  job:
+    package: com.monds.quartzui.job
+
+#debug: true
+
