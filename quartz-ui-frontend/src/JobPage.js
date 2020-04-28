@@ -1,5 +1,5 @@
-import {Component} from 'react';
-import {Container, FormCheck} from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Container, FormCheck } from 'react-bootstrap';
 import DataGrid from './DataGrid';
 import * as schedulerService from './SchedulerAPI';
 

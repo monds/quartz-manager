@@ -1,6 +1,6 @@
-import {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Pagination, Table} from 'react-bootstrap'
+import { Pagination, Table } from 'react-bootstrap'
 
 class DataGrid extends Component {
   state = {

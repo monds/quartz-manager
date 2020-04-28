@@ -1,6 +1,6 @@
-import {Component} from 'react';
-import {withRouter} from 'react-router-dom';
-import {Container} from 'react-bootstrap';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 import DataGrid from './DataGrid';
 import * as schedulerService from './SchedulerAPI';
 
