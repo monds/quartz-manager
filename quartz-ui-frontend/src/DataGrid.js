@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
-import { Table, Pagination } from 'react-bootstrap'
+import {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Pagination, Table} from 'react-bootstrap'
 
 class DataGrid extends Component {
   state = {
     activePage: 1
   }
 
-  constructor(props) {
-    super(props);
-
-    // this.state = {
-    //   activePage: props.initPage
-    // };
-  }
-
   renderRow = (columns, row) => {
     return (
-      <tr>
+      <tr onClick={() => this.props.onRowSelected(row)}>
         {columns.map((column, i) => {
           return (
-            <td>{row[column.name]}</td>
+            <td>{this.props.renderCell(row[column.field] || '', i, row)}</td>
           )
         })}
       </tr>
@@ -33,7 +26,7 @@ class DataGrid extends Component {
           <tr>
             {columns.map((column, i) => {
               return (
-                <th>{column.name}</th>
+                <th>{column.headerName}</th>
               )
             })}
           </tr>
@@ -45,6 +38,12 @@ class DataGrid extends Component {
         </tbody>
       </Table>
     );
+  }
+
+  renderCell = (i, data) => {
+    return (
+      <td>{data}</td>
+    )
   }
 
   changeActivePage = (page) => {
@@ -70,9 +69,17 @@ class DataGrid extends Component {
     
     return (
       <Pagination>
-        {this.state.activePage > 10 && <Pagination.Prev/>}
+        {this.state.activePage > 10 && <Pagination.Prev onClick={() => {
+          this.setState({'activePage': startPage - 1});
+          this.renderPage();
+          this.props.onPageChange(startPage - 1);
+        }}/>}
         {items}
-        {this.props.totalPages > endPage && <Pagination.Next/>}
+        {this.props.totalPages > endPage && <Pagination.Next onClick={() => {
+          this.setState({'activePage': endPage + 1});
+          this.renderPage();
+          this.props.onPageChange(endPage + 1);
+        }}/>}
       </Pagination> 
     )
   }
@@ -82,7 +89,7 @@ class DataGrid extends Component {
     // const nextItem = this.props.totalPages > maxPage ? '>' : null;
     // console.log(maxPage)
     // console.log(nextItem)
-    const totalPage = this.state.activePage <= 5 ? 5 : this.state.activePage + 2;
+    // const totalPage = this.state.activePage <= 5 ? 5 : this.state.activePage + 2;
     return (
       <div>
         {this.renderTable(this.props.columns, this.props.rowData)}
@@ -91,6 +98,17 @@ class DataGrid extends Component {
     );
   }
 
+}
+
+DataGrid.defaultProps = {
+  onRowSelected: () => null,
+  renderCell: (data, i, row) => data
+}
+
+DataGrid.propTypes = {
+  columns: PropTypes.object.isRequired,
+  onRowSelected: PropTypes.func,
+  renderCell: PropTypes.func,
 }
 
 export default DataGrid;
