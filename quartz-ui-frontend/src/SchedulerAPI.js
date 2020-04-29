@@ -8,6 +8,6 @@ export const getJobs = () => {
   // return jsonData;
 }
 
-export const getJobHistory = (job, page = 1) => {
+export const getJobHistory = (job, page = 0) => {
   return axios.get(`http://localhost:8080/api/job/${job}/history?page=${page}`);
 }

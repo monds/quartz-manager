@@ -9,19 +9,32 @@ class JobPage extends Component {
     jobData: []
   }
 
-  toJobDetail = (row) => {
+  toJobDetail = (e) => {
     // this.props.history.push(`job/${row['jobName']}`);
   }
 
   renderCell = (data, i, row) => {
-    if (i === 0) return (
+    if (i === 0) {
+      return (
       <FormCheck 
         type="switch"
-        id="custom-switch"
+        id={row['jobName']}
         label=""
+        onClick={e => {
+          if (!window.confirm('정말입니까?')) e.preventDefault();
+        }}
       />
-    )
-    else return data;
+      )
+    } else if (i === 1) {
+      return (
+        <a href="#" onClick={e => {
+          e.preventDefault();
+          this.props.history.push(`job/${row['jobName']}`);
+        }}>{row['jobName']}</a>
+      )
+    } else {
+      return data;
+    }
   }
 
   componentDidMount() {
@@ -46,7 +59,7 @@ class JobPage extends Component {
     ];
     return (
       <Container style={{ marginTop: '7em' }}>
-        {/* <Header as='h1'>Jobs</Header> */}
+        <h2>Jobs</h2>
         <DataGrid 
           columns={jobColumns}
           rowData={this.state.jobData}

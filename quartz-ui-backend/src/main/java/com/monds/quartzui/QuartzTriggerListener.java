@@ -26,20 +26,7 @@ public class QuartzTriggerListener implements TriggerListener {
 
     @Override
     public void triggerFired(Trigger trigger, JobExecutionContext jobExecutionContext) {
-        JobKey jobKey = trigger.getJobKey();
-        log.info("triggerFired at {} :: jobKey : {}", trigger.getStartTime(), jobKey);
-        log.info("triggerFired id {}", jobExecutionContext.getFireInstanceId());
-        TriggerHistory triggerHistory = new TriggerHistory();
-        try {
-            triggerHistory.setSchedName(jobExecutionContext.getScheduler().getSchedulerName());
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
-        triggerHistory.setEntryId(jobExecutionContext.getFireInstanceId());
-        triggerHistory.setJobName(jobKey.getName());
-        triggerHistory.setJobGroup(jobKey.getGroup());
-        triggerHistory.setStartTime(LocalDateTime.now());
-        triggerHistoryRepository.save(triggerHistory);
+        jobExecutionContext.getJobDetail().getJobDataMap().put("trigger.fired.time", LocalDateTime.now());
     }
 
     @Override
@@ -48,14 +35,24 @@ public class QuartzTriggerListener implements TriggerListener {
     }
 
     @Override
-    public void triggerMisfired(Trigger trigger) {
-
-    }
+    public void triggerMisfired(Trigger trigger) {}
 
     @Override
     public void triggerComplete(Trigger trigger, JobExecutionContext jobExecutionContext, Trigger.CompletedExecutionInstruction completedExecutionInstruction) {
         JobKey jobKey = trigger.getJobKey();
-        log.info("triggerComplete  at {} :: jobKey : {}", trigger.getStartTime(), jobKey);
-        log.info("triggerComplete id {}", jobExecutionContext.getFireInstanceId());
+        TriggerHistory triggerHistory = new TriggerHistory();
+        try {
+            triggerHistory.setSchedName(jobExecutionContext.getScheduler().getSchedulerName());
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        triggerHistory.setEntryId(jobExecutionContext.getFireInstanceId());
+        triggerHistory.setJobName(jobKey.getName());
+        triggerHistory.setJobGroup(jobKey.getGroup());
+//        triggerHistory.setStartTime(LocalDateTime.ofInstant(trigger.getPreviousFireTime().toInstant(), ZoneId.systemDefault()));
+        triggerHistory.setStartTime((LocalDateTime) jobExecutionContext.getJobDetail().getJobDataMap().get("trigger.fired.time"));
+        triggerHistory.setEndTime(LocalDateTime.now());
+        triggerHistoryRepository.save(triggerHistory);
     }
 }

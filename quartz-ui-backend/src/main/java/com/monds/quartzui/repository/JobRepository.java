@@ -11,10 +11,10 @@ public interface JobRepository {
 
     @Query(
         value = "select a.job_name, a.job_class_name, b.trigger_type, b.trigger_state, " +
-        "       from_unixtime(b.start_time) start_time,\n" +
-        "       from_unixtime(b.end_time) end_time,\n" +
-        "       from_unixtime(b.prev_fire_time) prev_fire_time,\n" +
-        "       from_unixtime(b.next_fire_time) next_fire_time,\n" +
+        "       from_unixtime(b.start_time / 1000, '%Y-%m-%d %T') start_time,\n" +
+        "       from_unixtime(b.end_time / 1000, '%Y-%m-%d %T') end_time,\n" +
+        "       from_unixtime(b.prev_fire_time / 1000, '%Y-%m-%d %T') prev_fire_time,\n" +
+        "       from_unixtime(b.next_fire_time / 1000, '%Y-%m-%d %T') next_fire_time,\n" +
         "        c.cron_expression\n" +
         "from qrtz_job_details a, qrtz_triggers b, qrtz_cron_triggers c\n" +
         "where a.job_name = b.job_name\n" +

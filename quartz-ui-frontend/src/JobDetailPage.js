@@ -32,25 +32,20 @@ class JobDetailPage extends Component {
 
   render() {
     const columns = [
-      { headerName: 'Schedule Name', field: 'schedName' },
       { headerName: 'Entry Id', field: 'entryId' },
-      { headerName: 'Job Name', field: 'jobName' },
-      { headerName: 'Group Name', field: 'jobGroup' },
       { headerName: 'Start Time', field: 'startTime' },
       { headerName: 'End Time', field: 'endTime' },
     ];
     return (
-      <div>
-        <Container>
-          {this.props.match.params.job}
-          <DataGrid 
-            columns={columns}
-            rowData={this.state.data}
-            totalPages={this.state.totalPages}
-            onPageChange={this.handlePageChange}
-          />
-        </Container>
-      </div>
+      <Container>
+        <h2>{this.props.match.params.job}</h2>
+        <DataGrid 
+          columns={columns}
+          rowData={this.state.data}
+          totalPages={this.state.totalPages}
+          onPageChange={this.handlePageChange}
+        />
+      </Container>
     )
   }
 }
