@@ -6,24 +6,37 @@ import * as schedulerService from './SchedulerAPI';
 class JobPage extends Component {
 
   state = {
-    jobData: []
+    jobData: [],
+    jobState: {}
   }
 
   toJobDetail = (e) => {
     // this.props.history.push(`job/${row['jobName']}`);
   }
 
+  handleJobState = (e) => {
+    if (!window.confirm('정말입니까?')) {
+      e.preventDefault();
+      return;
+    }
+    let jobState = this.state.jobState;
+    Object.keys(jobState).forEach(jobName => {
+      if (jobName === e.target.id)
+        jobState[jobName] = e.target.checked;
+    })
+    this.setState({ jobState });
+  }
+
   renderCell = (data, i, row) => {
     if (i === 0) {
       return (
-      <FormCheck 
-        type="switch"
-        id={row['jobName']}
-        label=""
-        onClick={e => {
-          if (!window.confirm('정말입니까?')) e.preventDefault();
-        }}
-      />
+        <FormCheck 
+          type="switch"
+          id={row['jobName']}
+          label=""
+          defaultChecked={this.state.jobState[row['jobName']] || false}
+          onClick={this.handleJobState}
+        />
       )
     } else if (i === 1) {
       return (
@@ -39,9 +52,13 @@ class JobPage extends Component {
 
   componentDidMount() {
     schedulerService.getJobs().then(res => {
-      console.log(res.data.content)
+      const jobState = {};
+      res.data.content.forEach(job => {
+        jobState[job['jobName']] = job['triggerState'] !== 'PAUSED';
+      })
+      this.setState({ jobState });
       this.setState({jobData: res.data.content});
-    }); 
+    });
   }
 
   render() {
@@ -50,7 +67,6 @@ class JobPage extends Component {
       { headerName: 'Job Name', field: 'jobName' },
       { headerName: 'class Name', field: 'jobClassName' },
       { headerName: 'Trigger Type', field: 'triggerType' },
-      { headerName: 'Trigger State', field: 'triggerState' },
       { headerName: 'Start Time', field: 'startTime' },
       { headerName: 'End Time', field: 'endTime' },
       { headerName: 'Prev Fire Time', field: 'prevFireTime' },
